@@ -108,8 +108,13 @@ func (c *fakeClient) List(ctx context.Context, opts *client.ListOptions, list ru
 		gvk = opts.Raw.TypeMeta.GroupVersionKind()
 	}
 
+	ns := ""
+	if opts != nil {
+		ns = opts.Namespace
+	}
+
 	gvr, _ := meta.UnsafeGuessKindToResource(gvk)
-	o, err := c.tracker.List(gvr, gvk, opts.Namespace)
+	o, err := c.tracker.List(gvr, gvk, ns)
 	if err != nil {
 		return err
 	}
@@ -123,7 +128,7 @@ func (c *fakeClient) List(ctx context.Context, opts *client.ListOptions, list ru
 		return err
 	}
 
-	if opts.LabelSelector != nil {
+	if opts != nil && opts.LabelSelector != nil {
 		return filterListItems(list, opts.LabelSelector)
 	}
 	return nil
