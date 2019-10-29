@@ -58,6 +58,13 @@ func NewFakeClient(initObjs ...runtime.Object) client.Client {
 // You can choose to initialize it with a slice of runtime.Object.
 func NewFakeClientWithScheme(clientScheme *runtime.Scheme, initObjs ...runtime.Object) client.Client {
 	tracker := testing.NewObjectTracker(clientScheme, scheme.Codecs.UniversalDecoder())
+	return NewFakeClientWithSchemeAndTracker(clientScheme, tracker, initObjs...)
+}
+
+// NewFakeClientWithSchemeAndTracker creates a new fake client with the
+// given scheme and tracker for testing.
+// You can choose to initialize it with a slice of runtime.Object.
+func NewFakeClientWithSchemeAndTracker(clientScheme *runtime.Scheme, tracker testing.ObjectTracker, initObjs ...runtime.Object) client.Client {
 	for _, obj := range initObjs {
 		err := tracker.Add(obj)
 		if err != nil {
